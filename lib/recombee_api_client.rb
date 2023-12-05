@@ -35,8 +35,8 @@ module RecombeeApiClient
     def send(request)
 
       return send_multipart_batch(request) if request.kind_of? Batch and request.requests.size > BATCH_MAX_SIZE
-
-      timeout = request.timeout / 1000
+      
+      timeout = (request.timeout.to_i < 1000 ? 5000 : request.timeout) / 1000
       uri = process_request_uri(request)
       uri = sign_url(uri)
       protocol = request.ensure_https ? 'https' : @protocol.to_s
